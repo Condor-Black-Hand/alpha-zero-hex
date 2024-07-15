@@ -23,7 +23,7 @@ from .HexNNet import HexNNet as hnnet
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
-    'epochs': 5,    #10
+    'epochs': 10,    #10
     'batch_size': 64,
     'cuda': torch.cuda.is_available(),
     'num_channels': 512,
