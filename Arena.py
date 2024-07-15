@@ -98,7 +98,7 @@ class Arena():
         oneWon = 0
         twoWon = 0
         draws = 0
-        for _ in range(num):
+        for _ in range(num):    #前一半
             gameResult = self.playGame(verbose=verbose)
             if gameResult==1:
                 oneWon+=1
@@ -116,7 +116,7 @@ class Arena():
 
         self.player1, self.player2 = self.player2, self.player1
         
-        for _ in range(num):
+        for _ in range(num):    #后一半
             gameResult = self.playGame(verbose=verbose)
             if gameResult==-1:
                 oneWon+=1                

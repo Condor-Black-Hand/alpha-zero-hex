@@ -15,7 +15,7 @@ args = dotdict({    #修改训练参数
 
     'checkpoint': './pretrained_models/hex/',
     'load_model': False,
-    'load_folder_file': ('./pretrained_models/hex/','xxx.pth.tar'),
+    'load_folder_file': ('./pretrained_models/hex/','xxx.pth.tar'),     #从一个模型开始
     'numItersForTrainExamplesHistory': 20,
 
 })

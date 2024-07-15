@@ -1,9 +1,12 @@
 '''
 Author: Ali Agha
 Date: Jan 19, 2018.
+
+Modified by Su322.
+
 Board class.
 Board data:
-  1=white, -1=black, 0=empty
+  1=red, -1=blue, 0=empty
   first dim is column , 2nd is row:
      pieces[1][7] is the hexagon in column 2, row 7
 hexagons are stored and manipulated as (x,y) tuples.
