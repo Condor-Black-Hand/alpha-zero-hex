@@ -1,4 +1,5 @@
 import Arena
+import matplotlib.pyplot as plt
 from MCTS import MCTS
 from hex.HexGame import HexGame, display
 from hex.HexPlayers import *
@@ -66,3 +67,39 @@ for cp in cur_cps:
 
 print('final res')
 print(res)
+
+# Function to extract win rates from results dictionary 输出学习曲线到图片
+def extract_win_rates(res, players):
+    win_rates = {player: [] for player in players}
+    checkpoints = sorted(res['random'].keys())
+
+    for cp in checkpoints:
+        for player in players:
+            if player in res:
+                az_won, total_games = res[player][cp]
+                win_rate = az_won / total_games
+                win_rates[player].append(win_rate)
+            else:
+                win_rates[player].append(0)  # No data for this player at this checkpoint
+
+    return checkpoints, win_rates
+
+# Players to plot
+players = ['random', 'abp1', 'abp2']
+
+# Extract win rates
+checkpoints, win_rates = extract_win_rates(res, players)
+
+# Plotting the learning curves
+plt.figure(figsize=(10, 6))
+for player in players:
+    plt.plot(checkpoints, win_rates[player], label=player)
+
+plt.xlabel('Checkpoint')
+plt.ylabel('Win Rate')
+plt.title('Learning Curve')
+plt.legend()
+plt.grid(True)
+
+# Save the plot as a file
+plt.savefig('/logs/learning/learning_curve.png')
