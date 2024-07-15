@@ -2,10 +2,15 @@ import numpy as np
 from pytorch_classification.utils import Bar, AverageMeter
 import time
 
+
+def index_to_letter(index):
+    return chr(ord('a') + index)
+
 class Arena():
     """
     An Arena class where any 2 agents can be pit against each other.
     """
+
     def __init__(self, player1, player2, game, display=None, mcts=None, ab=None):
         """
         Input:
@@ -41,40 +46,44 @@ class Arena():
         curPlayer = 1
         board = self.game.getInitBoard()
         it = 0
-        while self.game.getGameEnded(board, curPlayer)==0:          
-            it+=1
-            
+        while self.game.getGameEnded(board, curPlayer) == 0:
+            it += 1
+
             if verbose:
-                assert(self.display)
+                assert (self.display)
                 print("Turn ", str(it), "Player ", str(curPlayer))
                 self.display(board)
                 # print('connn', curPlayer)
                 # self.display(self.game.getCanonicalForm(board, curPlayer))
-                # print(board)            
+                # print(board)
 
-            action = players[curPlayer+1](board, curPlayer)
+            action = players[curPlayer + 1](board, curPlayer)
 
             if verbose:
-                print(int(action/self.game.n), action%self.game.n)
+                col_index = int(action / self.game.n)
+                row_index = action % self.game.n + 1
+                col_letter = index_to_letter(col_index)
+                print('==========  Action:', row_index, col_letter, ' ==========')     #改了下打印方式
 
-            valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer),1)
+            valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer), 1)
 
-            if valids[action]==0:
+            if valids[action] == 0:
                 print('invalid action in arena', action)
-                assert valids[action] >0
+                assert valids[action] > 0
             board, _ = self.game.getNextState(self.game.getCanonicalForm(board, curPlayer), 1, action)
             board = self.game.getOriginalForm(board, curPlayer)
             curPlayer = -curPlayer
-            
-            if self.mcts is not None and self.ab is not None:
-                print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))            
+
+            # if self.mcts is not None and self.ab is not None:
+            #    print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))
+            print("")  # 隔一行更好看
 
         if verbose:
-            assert(self.display)
+            assert (self.display)
             print("Game over: Turn ", str(it), "Result ", str(self.game.getGameEnded(board, 1)))
             self.display(board)
 
-        self.total_turn += it                        
+        self.total_turn += it
         # print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))
         return self.game.getGameEnded(board, 1)
 
@@ -94,44 +103,50 @@ class Arena():
         eps = 0
         maxeps = int(num)
 
-        num = int(num/2)
+        num = int(num / 2)
         oneWon = 0
         twoWon = 0
         draws = 0
-        for _ in range(num):    #前一半
+        for _ in range(num):
             gameResult = self.playGame(verbose=verbose)
-            if gameResult==1:
-                oneWon+=1
-            elif gameResult==-1:
-                twoWon+=1
+            if gameResult == 1:
+                oneWon += 1
+            elif gameResult == -1:
+                twoWon += 1
             else:
-                draws+=1
+                draws += 1
             # bookkeeping + plot progress
             eps += 1
             eps_time.update(time.time() - end)
             end = time.time()
-            bar.suffix  = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps+1, maxeps=maxeps, et=eps_time.avg,
-                                                                                                       total=bar.elapsed_td, eta=bar.eta_td)
+            bar.suffix = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps + 1,
+                                                                                                       maxeps=maxeps,
+                                                                                                       et=eps_time.avg,
+                                                                                                       total=bar.elapsed_td,
+                                                                                                       eta=bar.eta_td)
             bar.next()
 
         self.player1, self.player2 = self.player2, self.player1
-        
-        for _ in range(num):    #后一半
+
+        for _ in range(num):
             gameResult = self.playGame(verbose=verbose)
-            if gameResult==-1:
-                oneWon+=1                
-            elif gameResult==1:
-                twoWon+=1
+            if gameResult == -1:
+                oneWon += 1
+            elif gameResult == 1:
+                twoWon += 1
             else:
-                draws+=1
+                draws += 1
             # bookkeeping + plot progress
             eps += 1
             eps_time.update(time.time() - end)
             end = time.time()
-            bar.suffix  = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps+1, maxeps=num, et=eps_time.avg,
-                                                                                                       total=bar.elapsed_td, eta=bar.eta_td)
+            bar.suffix = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps + 1,
+                                                                                                       maxeps=num,
+                                                                                                       et=eps_time.avg,
+                                                                                                       total=bar.elapsed_td,
+                                                                                                       eta=bar.eta_td)
             bar.next()
-            
+
         bar.finish()
 
         return oneWon, twoWon, draws
