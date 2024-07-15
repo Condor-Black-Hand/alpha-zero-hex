@@ -91,7 +91,7 @@ class Coach():
         only if it wins >= updateThreshold fraction of games.
         """
 
-        startIter = 1
+        startIter = 1   #可以中途继续训练
         for i in range(startIter, self.args.numIters+1):
             # bookkeeping
             print('------ITER ' + str(i) + '------')
