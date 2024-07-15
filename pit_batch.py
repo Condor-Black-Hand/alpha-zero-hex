@@ -102,4 +102,4 @@ plt.legend()
 plt.grid(True)
 
 # Save the plot as a file
-plt.savefig('/logs/learning/learning_curve.png')
+plt.savefig('./logs/learning/learning_curve.png')
