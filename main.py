@@ -4,13 +4,13 @@ from hex.pytorch.NNet import NNetWrapper as nn
 from utils import *
 
 args = dotdict({    #修改训练参数
-    'numIters': 500,
-    'numEps': 50,
+    'numIters': 100,#1000
+    'numEps': 50,#100
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
     'numMCTSSims': 25,
-    'arenaCompare': 30,
+    'arenaCompare': 20,#40
     'cpuct': 1,
 
     'checkpoint': './pretrained_models/hex/',
