@@ -103,7 +103,7 @@ class Arena():
         game_record += f"[{teamA}][{teamB}]"
         game_record += f"[{result}]"
         game_record += f"[{formatted_start_time} 宜宾][2024 CCGC]"
-        game_record += f";{''.join([';' + move for move in moves])}"
+        game_record += f"{''.join([';' + move for move in moves])}"
         game_record += '}'
 
         # Generate a unique filename
