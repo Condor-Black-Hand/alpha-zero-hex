@@ -43,7 +43,7 @@ for cp in cur_cps:#修改上面cur_cps值来选择要对战的检查点
 
 	arena = Arena.Arena(azp, rp.play, g, display=display)
 	print('=========== playing check point {} vs {} ==========='.format(cp, 'random'))
-	az_won, rp_won, draws = arena.playGames(num, verbose=True)
+	az_won, rp_won, draws = arena.playGames(num, verbose=True, pitbatch=1)		#pitbatch参数为1默认不保存棋谱
 	print((az_won, rp_won, draws))
 	total_turn = arena.total_turn
 	print('sim count MCTS all', mcts.sim_count, 'avg game', mcts.sim_count/num, 'avg turn', mcts.sim_count/total_turn)

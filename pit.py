@@ -35,7 +35,11 @@ n1p = lambda x, player: np.argmax(mcts1.getActionProb(x, player, temp=0))
 
 arena = Arena.Arena(abpp, hp, g, display=display, mcts=mcts1, ab=abp)
 num = 2
-print(arena.playGames(num, verbose=True))
+#输入队伍名，传给playGames，再传给playGame
+teamA = input("Enter name for Team A: ")
+teamB = input("Enter name for Team B: ")
+
+print(arena.playGames(num, verbose=True, teamA=teamA, teamB=teamB))
 total_turn = arena.total_turn
 print('sim count MCTS all', mcts1.sim_count, 'avg game', mcts1.sim_count/num, 'avg turn', mcts1.sim_count/total_turn)
 print('sim count alpha beta', abp.sim_count, 'avg game', abp.sim_count/num, 'avg turn', abp.sim_count/total_turn)

@@ -1,10 +1,12 @@
 import numpy as np
 from pytorch_classification.utils import Bar, AverageMeter
 import time
+import datetime
 
 
 def index_to_letter(index):
     return chr(ord('a') + index)
+
 
 class Arena():
     """
@@ -32,7 +34,7 @@ class Arena():
         self.mcts = mcts
         self.ab = ab
 
-    def playGame(self, verbose=False):
+    def playGame(self, verbose=False, teamA=None, teamB=None, pitbatch=0):
         """
         Executes one episode of a game.
 
@@ -42,10 +44,13 @@ class Arena():
             or
                 draw result returned from the game that is neither 1, -1, nor 0.
         """
+        start_time = datetime.datetime.now()  #游戏开始时间
         players = [self.player2, None, self.player1]
         curPlayer = 1
         board = self.game.getInitBoard()
         it = 0
+        moves = []
+
         while self.game.getGameEnded(board, curPlayer) == 0:
             it += 1
 
@@ -58,12 +63,11 @@ class Arena():
                 # print(board)
 
             action = players[curPlayer + 1](board, curPlayer)
-
-            if verbose:
-                col_index = int(action / self.game.n)
-                row_index = action % self.game.n + 1
-                col_letter = index_to_letter(col_index)
-                print('==========  Action:', row_index, col_letter, ' ==========')     #改了下打印方式
+            col_index = int(action / self.game.n)
+            row_index = action % self.game.n + 1
+            col_letter = index_to_letter(col_index)
+            col_letter_record = index_to_letter(col_index - 32)
+            print('===============  Action:', row_index, col_letter, ' ===============')  #改了下打印方式
 
             valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer), 1)
 
@@ -72,11 +76,11 @@ class Arena():
                 assert valids[action] > 0
             board, _ = self.game.getNextState(self.game.getCanonicalForm(board, curPlayer), 1, action)
             board = self.game.getOriginalForm(board, curPlayer)
+            moves.append(f"{'R' if curPlayer == 1 else 'B'}({col_letter_record},{row_index})")      #记录每一步棋
             curPlayer = -curPlayer
 
-            # if self.mcts is not None and self.ab is not None:
+            #if self.mcts is not None and self.ab is not None:
             #    print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))
-            #print("")  # 隔一行更好看#不行，训练的时候空行太多
 
         if verbose:
             assert (self.display)
@@ -85,9 +89,32 @@ class Arena():
 
         self.total_turn += it
         # print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))
+
+        # Determine the winner
+        winner = self.game.getGameEnded(board, 1)
+        result = '先手胜' if winner == 1 else '后手胜' if winner == -1 else '平局'
+
+        # Create the game record string 棋谱格式
+        formatted_start_time = start_time.strftime('%Y-%m-%d %H:%M:%S')
+        game_record = '{[HEX]'
+        game_record += f"[{teamA}][{teamB}]"
+        game_record += f"[{result}]"
+        game_record += f"[{formatted_start_time} 宜宾][2024 CCGC]"
+        game_record += f";{''.join([';' + move for move in moves])}"
+        game_record += '}'
+
+        # Generate a unique filename
+        filename = f"HEX-{teamA} vs {teamB}-{result}.txt"
+        filepath = './logs/match_record' + '/' + filename
+
+        # Save the game record to a file  如果是训练和pit_batch可以不保存!
+        if pitbatch == 0:
+            with open(filepath, 'w') as f:
+                f.write(game_record)
+
         return self.game.getGameEnded(board, 1)
 
-    def playGames(self, num, verbose=False):
+    def playGames(self, num, verbose=False, teamA=None, teamB=None, pitbatch=0):
         """
         Plays num games in which player1 starts num/2 games and player2 starts
         num/2 games.
@@ -97,18 +124,20 @@ class Arena():
             twoWon: games won by player2
             draws:  games won by nobody
         """
+
         eps_time = AverageMeter()
         bar = Bar('Arena.playGames', max=num)
         end = time.time()
         eps = 0
         maxeps = int(num)
+        pit_batch = pitbatch    #如果是pit_batch里面，就不保存棋谱了，默认为0，在pit_batch就为1
 
         num = int(num / 2)
         oneWon = 0
         twoWon = 0
         draws = 0
         for _ in range(num):
-            gameResult = self.playGame(verbose=verbose)
+            gameResult = self.playGame(verbose=verbose, teamA=teamA, teamB=teamB, pitbatch=pit_batch)
             if gameResult == 1:
                 oneWon += 1
             elif gameResult == -1:
@@ -129,7 +158,7 @@ class Arena():
         self.player1, self.player2 = self.player2, self.player1
 
         for _ in range(num):
-            gameResult = self.playGame(verbose=verbose)
+            gameResult = self.playGame(verbose=verbose, teamA=teamA, teamB=teamB, pitbatch=pit_batch)
             if gameResult == -1:
                 oneWon += 1
             elif gameResult == 1:
