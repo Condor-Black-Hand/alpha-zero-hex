@@ -56,7 +56,7 @@ class HexGame(Game):
             valids[self.n*x+y]=1
         return np.array(valids)
 
-    def getGameEnded(self, board, player):      #和你有关
+    def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
 
         b = Board(self.n)
