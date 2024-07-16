@@ -30,11 +30,13 @@ num = 10
 full_cps = [1, 2, 3, 5, 7, 8, 9, 11, 13, 17, 21, 24, 28, 29, 30, 31, 33, 36, 38,\
 			39, 40, 41, 42, 44, 48, 50 ,57, 59, 60, 61, 63, 67, 68, 69, 71, 72, 73,\
 			74, 78, 79, 85, 89, 91, 95, 99]
-cur_cps = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 50]
+cur_cps = [1, 2, 3, 5, 7, 8, 9, 11, 13, 17, 21, 24, 28, 29, 30, 31, 33, 36, 38,\
+			39, 40, 41, 42, 44, 48, 50 ,57, 59, 60, 61, 63, 67, 68, 69, 71, 72, 73,\
+			74, 78, 79, 85, 89, 91, 95, 99]
 
 for cp in cur_cps:#修改上面cur_cps值来选择要对战的检查点
 	n1 = NNet(g)
-	n1.load_checkpoint('./pretrained_models/hex/','checkpoint_{}.pth.tar'.format(cp))
+	n1.load_checkpoint('./pretrained_models/hex/','checkpoint_{}.pth.tar'.format(cp))	#？
 	args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0})
 	mcts = MCTS(g, n1, args1)	
 	azp = lambda x, player: np.argmax(mcts.getActionProb(x, player, temp=0))
