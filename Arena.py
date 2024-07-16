@@ -31,6 +31,7 @@ class Arena():
         self.display = display
 
         self.total_turn = 0
+        self.total_match = 0    #比赛局数
         self.mcts = mcts
         self.ab = ab
 
@@ -91,6 +92,7 @@ class Arena():
             self.display(board)
 
         self.total_turn += it
+        self.total_match += 1
         # print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))
 
         # Determine the winner
@@ -107,7 +109,11 @@ class Arena():
         game_record += '}'
 
         # Generate a unique filename
-        filename = f"HEX-{teamA} vs {teamB}-{result}.txt"
+        if self.total_match==1:     #都是在前面那个先手，设定的是交换先后手对战两局的棋谱
+            filename = f"HEX-第{self.total_match}局-{teamA} vs {teamB}-{result}.txt"
+        elif self.total_match==2:
+            filename = f"HEX-第{self.total_match}局-{teamB} vs {teamA}-{result}.txt"
+
         filepath = './logs/match_record' + '/' + filename
 
         # Save the game record to a file  如果是训练和pit_batch可以不保存!
