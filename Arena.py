@@ -81,6 +81,9 @@ class Arena():
 
             #if self.mcts is not None and self.ab is not None:
             #    print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))
+            #print("")    #隔一行更好看
+
+
 
         if verbose:
             assert (self.display)
