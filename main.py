@@ -4,8 +4,8 @@ from hex.pytorch.NNet import NNetWrapper as nn
 from utils import *
 
 args = dotdict({    #修改训练参数
-    'numIters': 50,#1000
-    'numEps': 50,#100
+    'numIters': 100,#1000
+    'numEps': 100,#100
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
