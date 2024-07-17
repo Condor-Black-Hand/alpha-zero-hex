@@ -10,7 +10,7 @@ args = dotdict({    #修改训练参数
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
     'numMCTSSims': 25,
-    'arenaCompare': 40,#40
+    'arenaCompare': 50,#40
     'cpuct': 1,
 
     'checkpoint': './pretrained_models/hex/',
