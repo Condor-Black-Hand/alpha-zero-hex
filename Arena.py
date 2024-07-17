@@ -62,13 +62,14 @@ class Arena():
                 # print('connn', curPlayer)
                 # self.display(self.game.getCanonicalForm(board, curPlayer))
                 # print(board)
-
             action = players[curPlayer + 1](board, curPlayer)
             col_index = int(action / self.game.n)
             row_index = action % self.game.n + 1
             col_letter = index_to_letter(col_index)
-            col_letter_record = index_to_letter(col_index - 32)
-            print('===============  Action:', row_index, col_letter, ' ===============')  #改了下打印方式
+            col_letter_record = index_to_letter(col_index - 32)     #用在棋谱的
+
+            if verbose:
+                print('===============  Action:', row_index, col_letter, ' ===============')  # 改了下打印方式
 
             valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer), 1)
 
@@ -83,8 +84,6 @@ class Arena():
             #if self.mcts is not None and self.ab is not None:
             #    print('player {} mcts {} {} ab {} {}'.format(-curPlayer, self.mcts.sim_count, self.mcts.sim_count/it, self.ab.sim_count, self.ab.sim_count/it))
             #print("")    #隔一行更好看
-
-
 
         if verbose:
             assert (self.display)
@@ -116,7 +115,7 @@ class Arena():
 
         filepath = './logs/match_record' + '/' + filename
 
-        # Save the game record to a file  如果是训练和pit_batch可以不保存!
+        # Save the game record to a file  如果是训练和pit_batch可以不保存! 训练的没写
         if pitbatch == 0:
             with open(filepath, 'w') as f:
                 f.write(game_record)
