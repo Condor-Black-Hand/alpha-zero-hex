@@ -47,22 +47,11 @@ class MCTS():
             bestA = np.argmax(counts)
             probs = [0] * len(counts)
             probs[bestA] = 1
-        else:
-            counts = [x ** (1. / temp) for x in counts]
-            probs = [x / float(sum(counts)) for x in counts]
+            return probs
 
-            # Add some noise to counts to maintain exploration even when temp is 0
-        noise = np.random.dirichlet([0.03] * len(counts))   #引入噪声来增加探索性以提高样本多样性
-        probs = 0.75 * np.array(probs) + 0.25 * noise
-
-        # Use softmax to smooth the probability distribution
-        def softmax(x):
-            e_x = np.exp(x - np.max(x))
-            return e_x / e_x.sum(axis=0)
-
-        probs = softmax(probs)
-
-        return probs.tolist()
+        counts = [x ** (1. / temp) for x in counts]
+        probs = [x / float(sum(counts)) for x in counts]
+        return probs
 
 
     def search(self, board, player):
