@@ -42,7 +42,7 @@ class NNetWrapper(NeuralNet):
         """
         examples: list of examples, each example is of form (board, pi, v)
         """
-        optimizer = optim.Adam(self.nnet.parameters())
+        optimizer = optim.Adam(self.nnet.parameters(), weight_decay=0.0001)     #添加L2正则化
 
         for epoch in range(args.epochs):
             print('EPOCH ::: ' + str(epoch+1))
