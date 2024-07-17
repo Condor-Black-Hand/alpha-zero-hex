@@ -95,43 +95,43 @@ class Board():
         return False
 
     def count_to_connect(self):
-        shortest = (float('inf'), None)
-        for y in range(self.n):
-            if self.pieces[0][y] == -1:
+        shortest = (float('inf'), None)  # 初始化最短路径为无穷大和空路径
+        for y in range(self.n):  # 遍历顶部行的每一列
+            if self.pieces[0][y] == -1:  # 如果该位置由对手占据，跳过
                 continue
-            cost, path = self.shortest_path((0, y))
-            if cost < shortest[0]:
+            cost, path = self.shortest_path((0, y))  # 计算从该位置开始的最短路径及其代价
+            if cost < shortest[0]:  # 如果找到更短的路径，更新最短路径
                 shortest = (cost, path)
 
-        if shortest[0] == float('inf'):
-            return (self.n**2, shortest[1])
+        if shortest[0] == float('inf'):  # 如果找不到任何路径，返回一个大数和空路径
+            return (self.n ** 2, shortest[1])
 
-        return shortest
-
+        return shortest  # 返回找到的最短路径及其代价
 
     def shortest_path(self, source):
         """ 
         dijkstra algorithm based on https://gist.github.com/kachayev/5990802
         return shortest path to other side for player 1
         """
-        source_cost = int(self.pieces[source[0]][source[1]] == 0)
-        shortest = (float("inf"), None)
-        q, seen, mins = [(source_cost, source, [])], set(), {source: source_cost}
+        source_cost = int(self.pieces[source[0]][source[1]] == 0)  # 如果起点为空，代价为 1；否则为 0
+        shortest = (float("inf"), None)  # 初始化最短路径为无穷大和空路径
+        q, seen, mins = [(source_cost, source, [])], set(), {source: source_cost}  # 初始化优先队列、已访问节点集合和最小代价字典
         while q:
-            (cost,v1,path) = heappop(q)
+            (cost, v1, path) = heappop(q)  # 从优先队列中弹出代价最小的节点
             if v1 not in seen:
-                seen.add(v1)
-                path = [*path, v1]
-                if v1[0] == self.n-1 and cost < shortest[0]:
+                seen.add(v1)  # 标记节点为已访问
+                path = [*path, v1]  # 更新路径
+                if v1[0] == self.n - 1 and cost < shortest[0]:  # 如果到达底部且代价更小，更新最短路径
                     shortest = (cost, path)
 
-                for v2, c in self.get_neighbors(v1, 1, with_weights=True):
-                    if v2 in seen: continue
+                for v2, c in self.get_neighbors(v1, 1, with_weights=True):  # 遍历邻居节点
+                    if v2 in seen: continue  # 如果邻居节点已访问，跳过
                     prev = mins.get(v2, None)
-                    next = cost + c
-                    if prev is None or next < prev:
+                    next = cost + c  # 计算从当前节点到邻居节点的代价
+                    if prev is None or next < prev:  # 如果找到更短的路径，更新最小代价字典和优先队列
                         mins[v2] = next
                         heappush(q, (next, v2, path))
 
-        return shortest
+        return shortest  # 返回找到的最短路径及其代价
+
 
