@@ -11,7 +11,7 @@ args = dotdict({    #修改训练参数
     'maxlenOfQueue': 200000,
     'numMCTSSims': 25,
     'arenaCompare': 50,#40
-    'cpuct': 1,
+    'cpuct': 1.5,#1 提高探索性
 
     'checkpoint': './pretrained_models/hex/',
     'load_model': False,
