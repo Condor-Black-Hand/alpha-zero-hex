@@ -53,9 +53,9 @@ class MCTS():
 
             # Add some noise to counts to maintain exploration even when temp is 0
         noise = np.random.dirichlet([0.03] * len(counts))   #引入噪声来增加探索性以提高样本多样性
-        probs = 0.8 * probs + 0.2 * noise
+        probs = 0.75 * np.array(probs) + 0.25 * noise
 
-        return probs
+        return probs.tolist()
 
 
     def search(self, board, player):
