@@ -43,14 +43,18 @@ class MCTS():
         # print(self.Nsa)
         # print(counts)
 
-        if temp==0:
+        if temp == 0:
             bestA = np.argmax(counts)
-            probs = [0]*len(counts)
-            probs[bestA]=1
-            return probs
+            probs = [0] * len(counts)
+            probs[bestA] = 1
+        else:
+            counts = [x ** (1. / temp) for x in counts]
+            probs = [x / float(sum(counts)) for x in counts]
 
-        counts = [x**(1./temp) for x in counts]
-        probs = [x/float(sum(counts)) for x in counts]
+            # Add some noise to counts to maintain exploration even when temp is 0
+        noise = np.random.dirichlet([0.03] * len(counts))   #引入噪声来增加探索性以提高样本多样性
+        probs = 0.8 * probs + 0.2 * noise
+
         return probs
 
 
