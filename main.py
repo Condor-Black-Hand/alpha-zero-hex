@@ -4,18 +4,18 @@ from hex.pytorch.NNet import NNetWrapper as nn
 from utils import *
 
 args = dotdict({    #修改训练参数
-    'numIters': 100,#1000
+    'numIters': 1000,#1000
     'numEps': 100,#100
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
-    'numMCTSSims': 25,
-    'arenaCompare': 42,#40
+    'numMCTSSims': 75,
+    'arenaCompare': 40,#40
     'cpuct': 1.5,#1 提高探索性
 
     'checkpoint': './pretrained_models/hex/',
     'load_model': False,
-    'load_folder_file': ('./pretrained_models/hex/','xxx.pth.tar'),     #从一个模型开始
+    'load_folder_file': ('./pretrained_models/hex/','checkpoint_xxx.pth.tar'),     #从一个模型开始
     'numItersForTrainExamplesHistory': 20,
 
 })
